@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Utilisateurs{% endblock %}
+
+{% block content %}
+<h2>Liste des Utilisateurs</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Email</th>
+                <th>Date d'inscription</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                <td>
+                    {% if user.is_banned %}
+                        <span class="badge bg-danger">Banni</span>
+                    {% else %}
+                        <span class="badge bg-success">Actif</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if request.user.is_staff %}
+                        <form method="post" action="{% url 'accounts:toggle_ban' user.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if user.is_banned %}btn-success{% else %}btn-danger{% endif %}">
+                                {% if user.is_banned %}Débannir{% else %}Bannir{% endif %}
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

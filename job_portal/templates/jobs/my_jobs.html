@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes Offres d'Emploi{% endblock %}
+
+{% block content %}
+<h2>Mes Offres d'Emploi</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Entreprise</th>
+                <th>Lieu</th>
+                <th>Date d'expiration</th>
+                <th>Statut</th>
+                {% if request.user.is_staff or request.user.is_superuser or request.user.is_admin %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td>{{ job.title }}</td>
+                <td>{{ job.company }}</td>
+                <td>{{ job.location }}</td>
+                <td>{{ job.expires_at|date:"d/m/Y" }}</td>
+                <td>
+                    <span class="badge {% if job.is_expired %}bg-danger{% else %}bg-success{% endif %}">
+                        {% if job.is_expired %}Expiré{% else %}Actif{% endif %}
+                    </span>
+                </td>
+                <td>
+                    <a href="{% url 'jobs:job_edit' job.id %}" class="btn btn-sm btn-warning">Modifier</a>
+                    <a href="{% url 'jobs:job_applications' job.id %}" class="btn btn-sm btn-info">Candidatures</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidatures pour {{ job.title }}{% endblock %}
+
+{% block content %}
+<h2>Candidatures pour {{ job.title }}</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Candidat</th>
+                <th>Date de Candidature</th>
+                <th>Lettre de Motivation</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.applicant.username }}</td>
+                <td>{{ application.applied_at|date:"d/m/Y" }}</td>
+                <td>{{ application.cover_letter|truncatewords:20 }}</td>
+                <td>
+                    <span class="badge {% if application.status == 'accepted' %}bg-success{% elif application.status == 'rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+                        {{ application.get_status_display }}
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">Aucune candidature pour cette offre.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
