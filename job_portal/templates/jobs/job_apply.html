@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Postuler - {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">Postuler pour : {{ job.title }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>Détails de l'offre :</h5>
+                    <p><strong>Entreprise :</strong> {{ job.company }}</p>
+                    <p><strong>Lieu :</strong> {{ job.location }}</p>
+                    <p><strong>Salaire :</strong> {{ job.salary_range }}</p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.cover_letter.id_for_label }}" class="form-label">
+                            Lettre de motivation
+                        </label>
+                        {% render_field form.cover_letter class="form-control" rows="6" %}
+                        {% if form.cover_letter.errors %}
+                            <div class="alert alert-danger">
+                                {{ form.cover_letter.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.cv.id_for_label }}" class="form-label">
+                            CV (PDF)
+                        </label>
+                        {% render_field form.cv class="form-control" accept=".pdf" %}
+                        {% if form.cv.errors %}
+                            <div class="alert alert-danger">
+                                {{ form.cv.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Envoyer ma candidature
+                        </button>
+                        <a href="{% url 'jobs:job_detail' job.id %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à l'offre
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

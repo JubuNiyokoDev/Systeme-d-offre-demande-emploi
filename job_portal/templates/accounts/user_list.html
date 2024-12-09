@@ -29,18 +29,44 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if request.user.is_staff %}
-                        <form method="post" action="{% url 'accounts:toggle_ban' user.id %}" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm {% if user.is_banned %}btn-success{% else %}btn-danger{% endif %}">
-                                {% if user.is_banned %}Débannir{% else %}Bannir{% endif %}
-                            </button>
-                        </form>
-                    {% endif %}
+                    {% if request.user.is_authenticated %}
+    {% if request.user.is_staff or request.user.is_superuser %}
+        {% if user != request.user and not user.is_staff and not user.is_superuser %}
+            <form method="post" action="{% url 'accounts:toggle_ban' user.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" 
+                        class="btn btn-sm {% if user.is_banned %}btn-success{% else %}btn-danger{% endif %}"
+                        data-bs-toggle="tooltip" 
+                        title="{% if user.is_banned %}Débloquer cet utilisateur{% else %}Bloquer cet utilisateur{% endif %}">
+                    <i class="fas {% if user.is_banned %}fa-unlock{% else %}fa-ban{% endif %}"></i>
+                    {% if user.is_banned %}Débannir{% else %}Bannir{% endif %}
+                </button>
+            </form>
+        {% elif user == request.user %}
+            <span class="badge bg-primary">Vous-même</span>
+        {% else %}
+            <span class="badge bg-info">Admin/Staff</span>
+        {% endif %}
+    {% else %}
+        {% if user.is_banned %}
+            <span class="badge bg-danger">Banni</span>
+        {% else %}
+            <span class="badge bg-success">Actif</span>
+        {% endif %}
+    {% endif %}
+{% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+});
+</script>
 {% endblock %}

@@ -1,9 +1,6 @@
 from django import forms
 from .models import JobOffer, JobApplication
 
-from django import forms
-from .models import JobOffer
-
 class JobOfferForm(forms.ModelForm):
     class Meta:
         model = JobOffer
@@ -46,3 +43,86 @@ class JobApplicationForm(forms.ModelForm):
         labels = {
             'cover_letter': 'Lettre de motivation'
         }
+        
+class ApplicationStatusForm(forms.ModelForm):
+    class Meta:
+        model = JobApplication
+        fields = ['status', 'notes']
+        widgets = {
+            'status': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'notes': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Notes internes sur le candidat...'
+            }),
+        }
+        labels = {
+            'status': 'Statut de la candidature',
+            'notes': 'Notes internes'
+        }
+        
+class JobSearchForm(forms.Form):
+    q = forms.CharField(
+        required=False,
+        label='Rechercher',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Rechercher un poste, une entreprise...'
+        })
+    )
+    
+    location = forms.CharField(
+        required=False,
+        label='Lieu',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ville, région...'
+        })
+    )
+    
+    min_salary = forms.IntegerField(
+        required=False,
+        label='Salaire minimum',
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Salaire minimum'
+        })
+    )
+    
+    max_salary = forms.IntegerField(
+        required=False,
+        label='Salaire maximum',
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Salaire maximum'
+        })
+    )
+    DATE_CHOICES = [
+        ('', 'Toutes les dates'),
+        ('today', "Aujourd'hui"),
+        ('week', 'Cette semaine'),
+        ('month', 'Ce mois-ci'),
+    ]
+    
+    date_filter = forms.ChoiceField(
+        choices=DATE_CHOICES,
+        required=False,
+        label='Date de publication',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    
+    SORT_CHOICES = [
+        ('date_desc', 'Plus récent'),
+        ('date_asc', 'Plus ancien'),
+        ('salary_desc', 'Salaire décroissant'),
+        ('salary_asc', 'Salaire croissant'),
+    ]
+    
+    sort_by = forms.ChoiceField(
+        choices=SORT_CHOICES,
+        required=False,
+        label='Trier par',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )

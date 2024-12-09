@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestion des candidatures{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">
+        <i class="fas fa-users"></i> Gestion des candidatures
+    </h2>
+
+    <!-- Filtres -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Filtrer par offre</label>
+                    <select name="job" class="form-select" onchange="this.form.submit()">
+                        <option value="">Toutes les offres</option>
+                        {% for job in jobs %}
+                            <option value="{{ job.id }}" {% if job.id == selected_job %}selected{% endif %}>
+                                {{ job.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Statut</label>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Tous les statuts</option>
+                        <option value="pending">En attente</option>
+                        <option value="reviewing">En cours d'examen</option>
+                        <option value="accepted">Acceptée</option>
+                        <option value="rejected">Refusée</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Liste des candidatures -->
+    <div class="card">
+        <div class="card-body">
+            {% if applications %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Candidat</th>
+                                <th>Offre</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in applications %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-user-circle fa-2x me-2"></i>
+                                            <div>
+                                                <div>{{ application.applicant.get_full_name|default:application.applicant.username }}</div>
+                                                <small class="text-muted">{{ application.applicant.email }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ application.job.title }}</td>
+                                    <td>{{ application.applied_at|date:"d/m/Y" }}</td>
+                                    <td>
+                                        <span class="badge {% if application.status == 'accepted' %}bg-success
+                                                         {% elif application.status == 'rejected' %}bg-danger
+                                                         {% elif application.status == 'reviewing' %}bg-warning
+                                                         {% else %}bg-secondary{% endif %}">
+                                            {{ application.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-primary" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#applicationModal{{ application.id }}">
+                                            <i class="fas fa-edit"></i> Gérer
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal pour chaque candidature -->
+                                <div class="modal fade" id="applicationModal{{ application.id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Candidature de {{ application.applicant.get_full_name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="{% url 'jobs:update_application_status' application.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Statut de la candidature</label>
+                                                        <select name="status" class="form-select">
+                                                            {% for value, label in application.STATUS_CHOICES %}
+                                                                <option value="{{ value }}" {% if application.status == value %}selected{% endif %}>
+                                                                    {{ label }}
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Notes internes</label>
+                                                        <textarea name="notes" class="form-control" rows="3">{{ application.notes }}</textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-save"></i> Enregistrer les modifications
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if applications.has_other_pages %}
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if applications.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ applications.previous_page_number }}">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for num in applications.paginator.page_range %}
+                                <li class="page-item {% if applications.number == num %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endfor %}
+
+                            {% if applications.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ applications.next_page_number }}">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Aucune candidature pour le moment.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

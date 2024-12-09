@@ -2,6 +2,10 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm,SetPasswordForm
+
+
 
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
@@ -74,3 +78,43 @@ class CustomUserCreationForm(UserCreationForm):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
+    
+    
+class CustomUserChangeForm(UserChangeForm):
+    password = None  # Exclure le champ de mot de passe du formulaire
+
+    class Meta:
+        model = get_user_model()
+        fields = ['username', 'email', 'phone_number', 'first_name', 'last_name']
+        widgets = {
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Rendre certains champs obligatoires
+        self.fields['email'].required = True
+        self.fields['username'].help_text = None  # Supprimer le texte d'aid
+        
+        
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Personnalisation des messages d'erreur
+        self.error_messages = {
+            'password_incorrect': 'Votre ancien mot de passe est incorrect.',
+            'password_mismatch': 'Les deux mots de passe ne correspondent pas.',
+        }
+        
+        # Ajout des classes Bootstrap aux champs
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'placeholder': f'Entrez votre {self.fields[field].label.lower()}'
+            })

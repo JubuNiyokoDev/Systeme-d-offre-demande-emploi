@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="h5 mb-0">
+                        <i class="fas fa-user-edit"></i> Modifier mon profil
+                    </h3>
+                </div>
+
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Informations personnelles -->
+                        <div class="mb-4">
+                            <h4 class="h6 text-muted mb-3">Informations personnelles</h4>
+                            
+                            <div class="row g-3">
+                                <!-- Prénom -->
+                                <div class="col-md-6">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                        Prénom
+                                    </label>
+                                    {% render_field form.first_name class="form-control" placeholder="Votre prénom" %}
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.first_name.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Nom -->
+                                <div class="col-md-6">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                        Nom
+                                    </label>
+                                    {% render_field form.last_name class="form-control" placeholder="Votre nom" %}
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.last_name.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Informations de contact -->
+                        <div class="mb-4">
+                            <h4 class="h6 text-muted mb-3">Informations de contact</h4>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">
+                                    <i class="fas fa-envelope"></i> Adresse email
+                                </label>
+                                {% render_field form.email class="form-control" placeholder="votre@email.com" %}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Cette adresse email sera utilisée pour les notifications.
+                                </div>
+                            </div>
+
+                            <!-- Téléphone -->
+                            <div class="mb-3">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                                    <i class="fas fa-phone"></i> Numéro de téléphone
+                                </label>
+                                {% render_field form.phone_number class="form-control" placeholder="+33 6 XX XX XX XX" %}
+                                {% if form.phone_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.phone_number.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Informations du compte -->
+                        <div class="mb-4">
+                            <h4 class="h6 text-muted mb-3">Informations du compte</h4>
+
+                            <!-- Nom d'utilisateur -->
+                            <div class="mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user"></i> Nom d'utilisateur
+                                </label>
+                                {% render_field form.username class="form-control" %}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.username.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Type de compte (lecture seule) -->
+                        <div class="mb-4">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Type de compte : 
+                                {% if user.is_recruiter %}
+                                    <strong>Recruteur</strong>
+                                {% else %}
+                                    <strong>Candidat</strong>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour au profil
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Carte pour le changement de mot de passe -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-key"></i> Mot de passe
+                    </h5>
+                    <p class="card-text">
+                        Pour modifier votre mot de passe, cliquez sur le bouton ci-dessous.
+                    </p>
+                    <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-lock"></i> Changer mon mot de passe
+                    </a>
+                </div>
+            </div>
+
+            <!-- Carte pour la suppression du compte -->
+            <div class="card shadow-sm mt-4 border-danger">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Zone dangereuse
+                    </h5>
+                    <p class="card-text">
+                        La suppression de votre compte est irréversible et entraînera la perte de toutes vos données.
+                    </p>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        <i class="fas fa-trash"></i> Supprimer mon compte
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression du compte -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fas fa-exclamation-triangle"></i> Supprimer mon compte
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+                <ul class="text-danger">
+                    <li>Toutes vos données personnelles seront supprimées</li>
+                    {% if user.is_recruiter %}
+                        <li>Vos offres d'emploi seront supprimées</li>
+                    {% else %}
+                        <li>Vos candidatures seront supprimées</li>
+                    {% endif %}
+                    <li>Vous ne pourrez plus accéder à votre compte</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <form action="{% url 'accounts:delete_account' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Confirmer la suppression
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Validation des formulaires Bootstrap
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+{% endblock %}
+{% endblock %}

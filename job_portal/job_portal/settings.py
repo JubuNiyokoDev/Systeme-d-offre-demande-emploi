@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
+import os
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,7 +13,7 @@ SECRET_KEY = 'django-insecure-++c1y84eus--#7=xwn%7e07^c3n2-rm2u1il351pwk)8qq-=0g
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -30,6 +31,9 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'jobs.apps.JobsConfig',
     'widget_tweaks',
+    'drf_yasg',
+    'django_filters',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -40,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'job_portal.urls'
@@ -62,14 +67,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'job_portal.wsgi.application'
 
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'job_portal_db_95xa',
+        'USER': 'job_portal_user',
+        'PASSWORD': '8wxiM8U6HK6Fm0ZdJELar894ADRV8DWH',
+        'HOST': 'dpg-ctbmp1q3esus73f6q490-a.oregon-postgres.render.com',
+        'PORT': '5432',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 
@@ -100,7 +115,10 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -108,9 +126,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
 }
 
 SIMPLE_JWT = {
@@ -127,3 +151,28 @@ AUTHENTICATION_BACKENDS = [
     'accounts.backends.CustomAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = 'accounts:login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # ou votre serveur SMTP
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'niyondikojoffreasjubu@email.com'
+EMAIL_HOST_PASSWORD = 'qovyblhhhshprwsc'
+
+# Configuration pour les graphes
+GRAPH_MODELS = {
+    'all_applications': True,
+    'group_models': True,
+    'app_labels': ["accounts", "jobs"],
+    'theme': 'django2018',
+    'dot_args': {
+        'rankdir': 'LR',
+        'size': '"8,8"',
+        'fontsize': '10',
+    },
+}
+

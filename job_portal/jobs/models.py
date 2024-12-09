@@ -16,6 +16,8 @@ class JobOffer(models.Model):
         help_text="Example: 45000-55000"
     )
     
+    
+    
     class Meta:
         ordering = ['-created_at']
         verbose_name = "Offre d'emploi"
@@ -45,16 +47,18 @@ class JobOffer(models.Model):
 
 class JobApplication(models.Model):
     STATUS_CHOICES = (
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('rejected', 'Rejected'),
+        ('pending', 'En attente'),
+        ('reviewing', 'En cours d\'examen'),
+        ('accepted', 'Acceptée'),
+        ('rejected', 'Refusée'),
     )
 
     job = models.ForeignKey(JobOffer, on_delete=models.CASCADE, related_name='applications')
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='job_applications')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     applied_at = models.DateTimeField(auto_now_add=True)
     cover_letter = models.TextField()
+    notes = models.TextField(blank=True, help_text="Notes internes sur le candidat")  # Nouveau champ
 
     class Meta:
         unique_together = ('job', 'applicant')

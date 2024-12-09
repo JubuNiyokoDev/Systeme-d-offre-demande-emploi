@@ -15,8 +15,12 @@
                 <p class="card-text">{{ job.description }}</p>
                 <p class="card-text">
                     <small class="text-muted">
+                        <h5>Détails de l'offre :</h5>
                         Salaire : {{ job.salary_range }}<br>
                         Date d'expiration : {{ job.expires_at|date:"d/m/Y" }}
+                        <p><strong>Entreprise :</strong> {{ job.company }}</p>
+                        <p><strong>Lieu :</strong> {{ job.location }}</p>
+                        <p><strong>Salaire :</strong> {{ job.salary_range }}</p>
                     </small>
                 </p>
             </div>
