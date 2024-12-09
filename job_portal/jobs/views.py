@@ -100,6 +100,10 @@ def my_jobs(request):
 
 @login_required
 def job_create(request):
+    if not (request.user.is_recruiter or request.user.is_staff):
+        messages.error(request, "Seuls les recruteurs peuvent créer des offres d'emploi.")
+        return redirect('jobs:available_jobs')
+    
     if request.method == 'POST':
         form = JobOfferForm(request.POST)
         if form.is_valid():

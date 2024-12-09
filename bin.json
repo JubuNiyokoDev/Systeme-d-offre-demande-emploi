@@ -1,0 +1,72 @@
+{
+    "info": {
+        "name": "Job Portal API Tests",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get Token",
+            "request": {
+                "method": "POST",
+                "url": "http://127.0.0.1:8000/api/token/",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass123\"\n}"
+                }
+            }
+        },
+        {
+            "name": "List All Jobs",
+            "request": {
+                "method": "GET",
+                "url": "http://127.0.0.1:8000/api/jobs/offers/",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "My Published Jobs",
+            "request": {
+                "method": "GET",
+                "url": "http://127.0.0.1:8000/api/jobs/offers/my_published_jobs/",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Create New Job",
+            "request": {
+                "method": "POST",
+                "url": "http://127.0.0.1:8000/api/jobs/offers/",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"Développeur Django\",\n    \"description\": \"Nous recherchons un développeur Django expérimenté\",\n    \"company\": \"Ma Société\",\n    \"location\": \"Bujumbura\",\n    \"expires_at\": \"2024-12-31T23:59:59Z\",\n    \"salary_range\": \"50000-60000\"\n}"
+                }
+            }
+        }
+    ]
+}

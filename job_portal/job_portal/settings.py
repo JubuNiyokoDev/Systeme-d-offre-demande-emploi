@@ -122,3 +122,8 @@ SIMPLE_JWT = {
     'SIGNING_KEY': 'your_secret_key_here',  # Remplacez par une clé secrète sécurisée
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.CustomAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
