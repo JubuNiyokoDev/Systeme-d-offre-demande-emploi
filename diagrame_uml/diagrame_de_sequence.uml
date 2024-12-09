@@ -1,0 +1,24 @@
+@startuml
+
+actor Candidate
+participant "Interface Web" as UI
+participant "Système" as System
+participant "Base de données" as DB
+
+Candidate -> UI: Consulte les offres
+UI -> System: Requête liste des offres
+System -> DB: SELECT offres actives
+DB --> System: Résultats
+System --> UI: Affiche les offres
+UI --> Candidate: Voit les offres
+
+Candidate -> UI: Postule à une offre
+UI -> System: Soumet candidature
+System -> DB: Vérifie éligibilité
+DB --> System: OK
+System -> DB: INSERT candidature
+DB --> System: Confirmation
+System --> UI: Succès
+UI --> Candidate: Confirmation
+
+@enduml

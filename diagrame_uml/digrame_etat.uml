@@ -1,0 +1,10 @@
+@startuml
+
+[*] --> Brouillon
+Brouillon --> Active : Publication
+Active --> Expirée : Date dépassée
+Active --> Fermée : Fermeture manuelle
+Expirée --> [*]
+Fermée --> [*]
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+
+actor "Candidat" as Candidate
+actor "Recruteur" as Recruiter
+actor "Admin" as Admin
+
+rectangle "Système de Gestion d'Emploi" {
+    usecase "S'inscrire" as UC1
+    usecase "Se connecter" as UC2
+    usecase "Consulter les offres" as UC3
+    usecase "Postuler à une offre" as UC4
+    usecase "Gérer son profil" as UC5
+    usecase "Publier une offre" as UC6
+    usecase "Gérer les candidatures" as UC7
+    usecase "Bannir un utilisateur" as UC8
+}
+
+Candidate --> UC1
+Candidate --> UC2
+Candidate --> UC3
+Candidate --> UC4
+Candidate --> UC5
+
+Recruiter --> UC1
+Recruiter --> UC2
+Recruiter --> UC5
+Recruiter --> UC6
+Recruiter --> UC7
+
+Admin --> UC8
+Admin --> UC3
+
+@enduml

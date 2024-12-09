@@ -1,0 +1,20 @@
+@startuml
+
+node "Serveur Web" {
+    component "Django App" as app
+    component "Nginx" as nginx
+}
+
+node "Base de données" {
+    component "PostgreSQL" as db
+}
+
+node "Client" {
+    component "Navigateur Web" as browser
+}
+
+browser --> nginx : HTTPS
+nginx --> app : proxy
+app --> db : SQL
+
+@enduml
