@@ -112,4 +112,5 @@ dmypy.json
 
 cython_debug/
 
-
+/venv
+/job_portal/staticfiles
