@@ -4,6 +4,7 @@ from django.views.generic import RedirectView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+    TokenVerifyView
 )
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -28,6 +29,7 @@ urlpatterns = [
         path('jobs/', include('jobs.api_urls')),  
         path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
         path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+       path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     ])),
     
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),

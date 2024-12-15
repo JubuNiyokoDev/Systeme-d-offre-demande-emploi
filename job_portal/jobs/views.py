@@ -159,9 +159,10 @@ def apply_to_job(request, job_id):
         messages.error(request, "Vous ne pouvez pas postuler à votre propre offre.")
         return redirect('jobs:available_jobs')
     
-    if job.is_expired or job.status != 'published':
+    if job.is_expired or job.status != 'active':
         messages.error(request, "Cette offre n'est plus disponible.")
         return redirect('jobs:available_jobs')
+    
     
     if JobApplication.objects.filter(job=job, applicant=request.user).exists():
         messages.warning(request, "Vous avez déjà postulé à cette offre.")

@@ -9,6 +9,7 @@ router.register(r'users', api_views.UserViewSet)
 
 app_name = 'accounts'
 
+
 urlpatterns = [
     # API URLs
     path('api/', include(router.urls)),
