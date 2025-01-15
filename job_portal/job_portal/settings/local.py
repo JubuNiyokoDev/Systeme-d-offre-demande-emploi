@@ -1,4 +1,4 @@
-from .base import BASE_DIR
+from .base import *
 
 DEBUG = True
 
@@ -11,7 +11,7 @@ DATABASES = {
     }
 }
 
-
+ROOT_URLCONF = 'job_portal.urls'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  
 EMAIL_PORT = 587

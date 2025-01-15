@@ -1,28 +1,25 @@
-from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Q
 
-from .models import JobOffer, JobApplication
-from .forms import JobOfferForm, JobApplicationForm,ApplicationStatusForm
+from .models import JobOffer, JobApplication, JobStatus, ApplicationStatus
+from .forms import JobOfferForm, JobApplicationForm, ApplicationStatusForm
 from apps.accounts.models import CustomUser
 from django.core.paginator import Paginator
 
+
 @login_required
 def available_jobs(request):
-    jobs = JobOffer.objects.filter(status='active')
+    jobs = JobOffer.objects.filter(status__name='active')
     
     # Recherche par mot-clé
     query = request.GET.get('q', '')
     if query:
         jobs = jobs.filter(
-            Q(title__icontains=query) |
-            Q(company__icontains=query) |
+            Q(title__icontains=query) | 
+            Q(company__icontains=query) | 
             Q(description__icontains=query)
         )
     
@@ -61,7 +58,7 @@ def available_jobs(request):
     
     # Filtrage par date d'expiration
     jobs = jobs.filter(
-        Q(expires_at__gt=timezone.now()) |
+        Q(expires_at__gt=timezone.now()) | 
         Q(expires_at__isnull=True)
     ).order_by('-created_at')
 
@@ -97,10 +94,12 @@ def available_jobs(request):
     
     return render(request, 'jobs/available_jobs.html', context)
 
+
 @login_required
 def my_jobs(request):
     jobs = JobOffer.objects.filter(publisher=request.user).order_by('-created_at')
     return render(request, 'jobs/my_jobs.html', {'jobs': jobs})
+
 
 @login_required
 def job_create(request):
@@ -113,12 +112,14 @@ def job_create(request):
         if form.is_valid():
             job = form.save(commit=False)
             job.publisher = request.user
+            job.status, _ = JobStatus.objects.get_or_create(name='active')
             job.save()
             messages.success(request, "L'offre d'emploi a été créée avec succès.")
             return redirect('jobs:my_jobs')
     else:
         form = JobOfferForm()
     return render(request, 'jobs/job_form.html', {'form': form, 'title': 'Créer une offre'})
+
 
 @login_required
 def job_edit(request, job_id):
@@ -144,43 +145,43 @@ def job_edit(request, job_id):
     }
     return render(request, 'jobs/job_form.html', context)
 
+
 @login_required
 def apply_to_job(request, job_id):
-    # Vérifier si l'utilisateur est un recruteur
     if request.user.is_recruiter:
         messages.error(request, "Les recruteurs ne peuvent pas postuler aux offres d'emploi.")
         return redirect('jobs:available_jobs')
-    
+
     job = get_object_or_404(JobOffer, id=job_id)
-    
-    # Vérifications
+
     if job.publisher == request.user:
         messages.error(request, "Vous ne pouvez pas postuler à votre propre offre.")
         return redirect('jobs:available_jobs')
-    
-    if job.is_expired or job.status != 'active':
+
+    if job.is_expired or job.status.name != 'active':
         messages.error(request, "Cette offre n'est plus disponible.")
         return redirect('jobs:available_jobs')
-    
-    
+
     if JobApplication.objects.filter(job=job, applicant=request.user).exists():
         messages.warning(request, "Vous avez déjà postulé à cette offre.")
         return redirect('jobs:job_detail', job_id=job.id)
-    
+
     if request.method == 'POST':
         form = JobApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             application = form.save(commit=False)
             application.job = job
             application.applicant = request.user
+            application.status, _ = ApplicationStatus.objects.get_or_create(name='Pending')
             application.save()
             messages.success(request, "Votre candidature a été envoyée avec succès!")
             return redirect('jobs:my_applications')
-    
+
     return render(request, 'jobs/apply.html', {
         'form': JobApplicationForm(),
         'job': job
     })
+
 
 @login_required
 def my_applications(request):
@@ -191,11 +192,13 @@ def my_applications(request):
     ).order_by('-applied_at')
     return render(request, 'jobs/my_applications.html', {'applications': applications, 'query': query})
 
+
 @login_required
 def job_applications(request, job_id):
     job = get_object_or_404(JobOffer, id=job_id, publisher=request.user)
     applications = job.applications.all().order_by('-applied_at')
     return render(request, 'jobs/job_applications.html', {'job': job, 'applications': applications})
+
 
 # Vues pour la gestion des utilisateurs
 @login_required
@@ -205,6 +208,7 @@ def user_list(request):
         return redirect('jobs:available_jobs')
     users = CustomUser.objects.all().order_by('username')
     return render(request, 'accounts/user_list.html', {'users': users})
+
 
 @login_required
 def toggle_ban_user(request, user_id):
@@ -222,6 +226,7 @@ def toggle_ban_user(request, user_id):
     
     return redirect('accounts:user_list')
 
+
 @login_required
 def job_delete(request, job_id):
     job = get_object_or_404(JobOffer, id=job_id)
@@ -237,9 +242,6 @@ def job_delete(request, job_id):
         return redirect('jobs:available_jobs')
     
     return redirect('jobs:available_jobs')
-
-
-
 
 
 @login_required
@@ -262,6 +264,8 @@ def job_detail(request, job_id):
     }
     
     return render(request, 'jobs/job_detail.html', context)
+
+
 @login_required
 def manage_applications(request, job_id=None):
     if not request.user.is_recruiter:
@@ -282,7 +286,7 @@ def manage_applications(request, job_id=None):
     # Ajout du filtre par statut
     status_filter = request.GET.get('status')
     if status_filter:
-        applications = applications.filter(status=status_filter)
+        applications = applications.filter(status__name=status_filter)  # Filtrer par le nom du statut
 
     # Pagination
     paginator = Paginator(applications, 10)
@@ -292,18 +296,21 @@ def manage_applications(request, job_id=None):
     context.update({
         'applications': applications,
         'jobs': jobs,
-        'STATUS_CHOICES': JobApplication.STATUS_CHOICES,
+        'STATUS_CHOICES': ApplicationStatus.objects.all(),  # Récupérer tous les choix de statut
+        'selected_status': status_filter,  # Pour garder le filtre sélectionné
     })
     
     return render(request, 'jobs/manage_applications.html', context)
+
+
 @login_required
 def update_application_status(request, application_id):
     if not request.user.is_recruiter:
         messages.error(request, "Accès non autorisé.")
         return redirect('jobs:available_jobs')
 
-    application = get_object_or_404(JobApplication, 
-                                  id=application_id, 
+    application = get_object_or_404(JobApplication,
+                                  id=application_id,
                                   job__publisher=request.user)
 
     if request.method == 'POST':
@@ -315,6 +322,7 @@ def update_application_status(request, application_id):
     
     return redirect('jobs:manage_applications')
 
+
 @login_required
 def view_application(request, application_id):
     if not request.user.is_recruiter:
@@ -322,8 +330,8 @@ def view_application(request, application_id):
         return redirect('jobs:job_list')
 
     application = get_object_or_404(
-        JobApplication, 
-        id=application_id, 
+        JobApplication,
+        id=application_id,
         job__publisher=request.user
     )
     
@@ -334,6 +342,7 @@ def view_application(request, application_id):
     
     return render(request, 'jobs/view_application.html', context)
 
+
 def job_list(request):
     jobs = JobOffer.objects.filter(status='active', expires_at__gt=timezone.now())
     
@@ -341,8 +350,8 @@ def job_list(request):
     query = request.GET.get('q')
     if query:
         jobs = jobs.filter(
-            Q(title__icontains=query) |
-            Q(description__icontains=query) |
+            Q(title__icontains=query) | 
+            Q(description__icontains=query) | 
             Q(company__icontains=query)
         )
     
