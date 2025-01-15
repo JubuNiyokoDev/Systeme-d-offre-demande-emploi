@@ -34,9 +34,9 @@
         {% if user != request.user and not user.is_staff and not user.is_superuser %}
             <form method="post" action="{% url 'accounts:toggle_ban' user.id %}" class="d-inline">
                 {% csrf_token %}
-                <button type="submit" 
+                <button type="submit"
                         class="btn btn-sm {% if user.is_banned %}btn-success{% else %}btn-danger{% endif %}"
-                        data-bs-toggle="tooltip" 
+                        data-bs-toggle="tooltip"
                         title="{% if user.is_banned %}Débloquer cet utilisateur{% else %}Bloquer cet utilisateur{% endif %}">
                     <i class="fas {% if user.is_banned %}fa-unlock{% else %}fa-ban{% endif %}"></i>
                     {% if user.is_banned %}Débannir{% else %}Bannir{% endif %}

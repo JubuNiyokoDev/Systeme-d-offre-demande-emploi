@@ -13,7 +13,7 @@
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
-                    
+
                     {% for field in form %}
                     <div class="mb-3">
                         <label for="{{ field.id_for_label }}" class="form-label">
@@ -22,7 +22,7 @@
                                 <span class="text-danger">*</span>
                             {% endif %}
                         </label>
-                        
+
                         {% if field.errors %}
                             {{ field|add_class:"form-control is-invalid" }}
                             <div class="invalid-feedback">
@@ -31,7 +31,7 @@
                         {% else %}
                             {{ field|add_class:"form-control" }}
                         {% endif %}
-                        
+
                         {% if field.help_text %}
                             <small class="form-text text-muted">{{ field.help_text }}</small>
                         {% endif %}

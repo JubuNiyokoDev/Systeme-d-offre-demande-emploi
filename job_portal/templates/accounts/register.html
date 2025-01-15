@@ -13,7 +13,7 @@
             <div class="card-body">
                 <form method="post" novalidate>
                     {% csrf_token %}
-                    
+
                     <!-- Champs username et email -->
                     {% for field in form %}
     {% if field.name != 'is_recruiter' and field.name != 'password1' and field.name != 'password2' %}
@@ -92,7 +92,7 @@
                         </button>
                     </div>
                 </form>
-                
+
                 <div class="text-center mt-3">
                     <p>Déjà un compte? <a href="{% url 'accounts:login' %}" class="text-primary">Se connecter</a></p>
                 </div>

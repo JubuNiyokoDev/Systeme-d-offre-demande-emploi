@@ -33,12 +33,12 @@
                     <div class="mb-3">
                         <p><i class="fas fa-envelope"></i> <strong>Email :</strong><br>
                         {{ user.email }}</p>
-                        
+
                         {% if user.phone_number %}
                             <p><i class="fas fa-phone"></i> <strong>Téléphone :</strong><br>
                             {{ user.phone_number }}</p>
                         {% endif %}
-                        
+
                         <p><i class="fas fa-calendar"></i> <strong>Membre depuis :</strong><br>
                         {{ user.date_joined|date:"d/m/Y" }}</p>
                     </div>

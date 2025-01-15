@@ -15,64 +15,183 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='ApplicationStatus',
+            name="ApplicationStatus",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True, verbose_name='Nom du statut')),
-                ('description', models.TextField(blank=True, verbose_name='Description du statut')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=50, unique=True, verbose_name="Nom du statut"
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, verbose_name="Description du statut"),
+                ),
             ],
             options={
-                'verbose_name': 'Statut de la candidature',
-                'verbose_name_plural': 'Statuts des candidatures',
+                "verbose_name": "Statut de la candidature",
+                "verbose_name_plural": "Statuts des candidatures",
             },
         ),
         migrations.CreateModel(
-            name='JobStatus',
+            name="JobStatus",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True, verbose_name='Nom du statut')),
-                ('description', models.TextField(blank=True, verbose_name='Description du statut')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=50, unique=True, verbose_name="Nom du statut"
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, verbose_name="Description du statut"),
+                ),
             ],
             options={
-                'verbose_name': "Statut de l'offre d'emploi",
-                'verbose_name_plural': "Statuts des offres d'emploi",
+                "verbose_name": "Statut de l'offre d'emploi",
+                "verbose_name_plural": "Statuts des offres d'emploi",
             },
         ),
         migrations.CreateModel(
-            name='JobOffer',
+            name="JobOffer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, verbose_name='Titre du poste')),
-                ('description', models.TextField(verbose_name='Description')),
-                ('company', models.CharField(max_length=100, verbose_name='Entreprise')),
-                ('location', models.CharField(max_length=100, verbose_name='Lieu')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Date de création')),
-                ('expires_at', models.DateTimeField(verbose_name="Date d'expiration")),
-                ('salary_range', models.CharField(blank=True, help_text='Exemple : 45000-55000', max_length=100, verbose_name='Fourchette de salaire')),
-                ('publisher', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='published_jobs', to=settings.AUTH_USER_MODEL, verbose_name='Publié par')),
-                ('status', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='jobs.jobstatus', verbose_name='Statut')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(max_length=200, verbose_name="Titre du poste"),
+                ),
+                ("description", models.TextField(verbose_name="Description")),
+                (
+                    "company",
+                    models.CharField(max_length=100, verbose_name="Entreprise"),
+                ),
+                ("location", models.CharField(max_length=100, verbose_name="Lieu")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Date de création"
+                    ),
+                ),
+                ("expires_at", models.DateTimeField(verbose_name="Date d'expiration")),
+                (
+                    "salary_range",
+                    models.CharField(
+                        blank=True,
+                        help_text="Exemple : 45000-55000",
+                        max_length=100,
+                        verbose_name="Fourchette de salaire",
+                    ),
+                ),
+                (
+                    "publisher",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="published_jobs",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Publié par",
+                    ),
+                ),
+                (
+                    "status",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="jobs.jobstatus",
+                        verbose_name="Statut",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': "Offre d'emploi",
-                'verbose_name_plural': "Offres d'emploi",
-                'ordering': ['-created_at'],
+                "verbose_name": "Offre d'emploi",
+                "verbose_name_plural": "Offres d'emploi",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='JobApplication',
+            name="JobApplication",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('applied_at', models.DateTimeField(auto_now_add=True, verbose_name='Date de candidature')),
-                ('cover_letter', models.TextField(verbose_name='Lettre de motivation')),
-                ('notes', models.TextField(blank=True, help_text='Notes internes sur le candidat', verbose_name='Notes internes')),
-                ('applicant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='job_applications', to=settings.AUTH_USER_MODEL, verbose_name='Candidat')),
-                ('status', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='jobs.applicationstatus', verbose_name='Statut')),
-                ('job', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='applications', to='jobs.joboffer', verbose_name="Offre d'emploi")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "applied_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Date de candidature"
+                    ),
+                ),
+                ("cover_letter", models.TextField(verbose_name="Lettre de motivation")),
+                (
+                    "notes",
+                    models.TextField(
+                        blank=True,
+                        help_text="Notes internes sur le candidat",
+                        verbose_name="Notes internes",
+                    ),
+                ),
+                (
+                    "applicant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="job_applications",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Candidat",
+                    ),
+                ),
+                (
+                    "status",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="jobs.applicationstatus",
+                        verbose_name="Statut",
+                    ),
+                ),
+                (
+                    "job",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="applications",
+                        to="jobs.joboffer",
+                        verbose_name="Offre d'emploi",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Candidature',
-                'verbose_name_plural': 'Candidatures',
-                'unique_together': {('job', 'applicant')},
+                "verbose_name": "Candidature",
+                "verbose_name_plural": "Candidatures",
+                "unique_together": {("job", "applicant")},
             },
         ),
     ]

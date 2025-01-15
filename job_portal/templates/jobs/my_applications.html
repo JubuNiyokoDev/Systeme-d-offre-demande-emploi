@@ -12,10 +12,10 @@
 
 <form method="get" action="{% url 'jobs:my_applications' %}" class="mb-4">
     <div class="input-group">
-        <input type="text" 
-               name="q" 
-               class="form-control" 
-               placeholder="Rechercher dans mes candidatures..." 
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="Rechercher dans mes candidatures..."
                value="{{ query|default:'' }}">
         <button class="btn btn-outline-primary" type="submit">
             <i class="fas fa-search"></i> Rechercher
@@ -48,9 +48,9 @@
                     </span>
                 </td>
                 <td>
-                    <button type="button" 
-                            class="btn btn-sm btn-info" 
-                            data-bs-toggle="modal" 
+                    <button type="button"
+                            class="btn btn-sm btn-info"
+                            data-bs-toggle="modal"
                             data-bs-target="#coverLetterModal{{ application.id }}">
                         <i class="fas fa-eye"></i> Voir
                     </button>
