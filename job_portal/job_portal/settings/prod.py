@@ -1,7 +1,7 @@
 from .base import *
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://systeme-d-offre-demande-emploi.onrender.com']  
+ALLOWED_HOSTS = ['systeme-d-offre-demande-emploi.onrender.com']  
 
 DATABASES = {
     'default': {
