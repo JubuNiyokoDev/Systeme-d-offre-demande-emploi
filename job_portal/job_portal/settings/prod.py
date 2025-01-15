@@ -1,5 +1,5 @@
 from .base import *
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['https://systeme-d-offre-demande-emploi.onrender.com']  
 
