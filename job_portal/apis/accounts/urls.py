@@ -4,10 +4,10 @@ from . import views
 
 # API router configuration
 router = DefaultRouter()
-router.register(r'users', views.UserViewSet)
+router.register(r"users", views.UserViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),  # Include router URLs
+    path("", include(router.urls)),  # Include router URLs
 ]
 
 

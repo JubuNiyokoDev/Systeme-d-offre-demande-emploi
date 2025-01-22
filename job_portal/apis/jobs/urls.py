@@ -4,11 +4,13 @@ from . import views
 
 
 router = DefaultRouter()
-router.register(r'jobs', views.JobOfferViewSet, basename='api-job')
-router.register(r'applications', views.JobApplicationViewSet, basename='api-application')
+router.register(r"jobs", views.JobOfferViewSet, basename="api-job")
+router.register(
+    r"applications", views.JobApplicationViewSet, basename="api-application"
+)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
 
 # New API endpoints will be accessible via:
