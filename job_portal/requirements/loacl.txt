@@ -1,0 +1,7 @@
+# Dépendances locales de développement
+pre-commit
+pydot==3.0.3
+PyJWT==2.10.1
+pyparsing==3.2.0
+PyYAML==6.0.2
+uritemplate==4.1.1

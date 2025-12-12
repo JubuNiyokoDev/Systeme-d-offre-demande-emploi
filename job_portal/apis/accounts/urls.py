@@ -8,6 +8,7 @@ router.register(r"users", views.UserViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),  # Include router URLs
+    path("sla/", views.sla_status, name="sla_status"),
 ]
 
 

@@ -1,0 +1,62 @@
+[
+    {
+      "_id": 1,
+      "fullName": "Niyondiko Joffre",
+      "birthDate": "2000-06-28",
+      "matricule": "F2021/00142",
+      "classAssigned": "Classe A",
+      "address": {
+        "streetAddress": "Rusange",
+        "postalCode": "418 GITEGA",
+        "province": "Ruyigi",
+        "commune": "Kinyinya",
+        "colline": "Muvumu",
+        "city": "Kinyinya"
+      }
+    },
+    {
+      "_id": 2,
+      "fullName": "Irakoze Alain",
+      "birthDate": "2001-02-15",
+      "matricule": "F2021/00143",
+      "classAssigned": "Classe B",
+      "address": {
+        "streetAddress": "Gihanga",
+        "postalCode": "519 BUJUMBURA",
+        "province": "Bubanza",
+        "commune": "Gihanga",
+        "colline": "Rugazi",
+        "city": "Gihanga"
+      }
+    },
+    {
+      "_id": 3,
+      "fullName": "Uwimana Clarisse",
+      "birthDate": "1999-08-23",
+      "matricule": "F2021/00144",
+      "classAssigned": "Classe A",
+      "address": {
+        "streetAddress": "Kibenga",
+        "postalCode": "320 BUJUMBURA",
+        "province": "Bujumbura",
+        "commune": "Muha",
+        "colline": "Kinindo",
+        "city": "Bujumbura"
+      }
+    },
+    {
+      "_id": 4,
+      "fullName": "Habonimana Eric",
+      "birthDate": "2002-11-10",
+      "matricule": "F2021/00145",
+      "classAssigned": "Classe C",
+      "address": {
+        "streetAddress": "Rugombo",
+        "postalCode": "700 CIBITOKE",
+        "province": "Cibitoke",
+        "commune": "Rugombo",
+        "colline": "Mparambo",
+        "city": "Rugombo"
+      }
+    }
+  ]

@@ -1,0 +1,4 @@
+# Dépendances de production
+gunicorn
+psycopg2
+django-prometheus

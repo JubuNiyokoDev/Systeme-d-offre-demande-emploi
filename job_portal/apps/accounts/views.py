@@ -12,6 +12,13 @@ from .models import CustomUser
 from django.contrib.auth import logout, update_session_auth_hash
 from django.shortcuts import get_object_or_404
 from apps.jobs.models import JobApplication, JobOffer
+from django.http import JsonResponse
+
+import time
+
+
+def index(request):
+    return JsonResponse({"messge": "Hello Jubu Niyoko", "time": time.time()})
 
 
 @login_required

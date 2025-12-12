@@ -20,15 +20,18 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    "apps.accounts",
-    "apps.jobs",
     "widget_tweaks",
     "drf_yasg",
     "django_filters",
     "django_extensions",
+    "django_prometheus",
+    "apps.jobs",
+    "apps.accounts",
 ]
 
+
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -37,7 +40,10 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
+MIDDLEWARE.insert(1, "job_portal.middleware.metrics.MetricsMiddleware")
+
 
 ROOT_URLCONF = "job_portal.urls"
 

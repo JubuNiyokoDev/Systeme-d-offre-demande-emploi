@@ -6,6 +6,7 @@ from apps.accounts.models import CustomUser
 from .serializers import UserSerializer, RegisterSerializer
 from apps.accounts.permissions import IsAdminOrSelf
 from django.contrib.auth import authenticate
+from django.http import JsonResponse
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -107,3 +108,12 @@ class UserViewSet(viewsets.ModelViewSet):
             {"status": "success", "message": "Compte supprimé avec succès."},
             status=status.HTTP_204_NO_CONTENT,
         )
+
+
+def sla_status(request):
+    data = {
+        "slo_response_time": "95% des requêtes en dessous de 200ms",
+        "slo_error_rate": "Moins de 1% d'erreurs",
+        "current_status": "SLA respecté",
+    }
+    return JsonResponse(data)
